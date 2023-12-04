@@ -9,44 +9,52 @@ import (
 var wg sync.WaitGroup
 
 type battery struct {
-	power int
+	power map[string]int
 	mux   *sync.Mutex
 }
 
-func (b *battery) light() {
+func (b *battery) light(burnPower int) {
 	b.mux.Lock()
-	time.Sleep(time.Second * time.Duration(b.power))
-	b.power -= 1
+	defer b.mux.Unlock()
+	time.Sleep(time.Millisecond * time.Duration(burnPower))
+	b.power["light"] -= burnPower
 	fmt.Println("Power: ", b.power)
 	wg.Done()
-	b.mux.Unlock()
 }
 
-// func (b *battery) fan() {
-// 	b.mux.Lock()
-// 	time.Sleep(time.Second * time.Duration(b.power))
-// 	b.power -= 30
-// 	fmt.Println("Power: ", b.power)
-// 	wg.Done()
-// 	b.mux.Unlock()
-// }
+func (b *battery) fan(burnPower int) {
+	b.mux.Lock()
+	defer b.mux.Unlock()
+	fmt.Println("Power: ", b.power)
+	b.power["fan"] -= burnPower
+	wg.Done()
+}
 
 func main() {
 	myBattery := battery{
-		power: 300,
-		mux:   &sync.Mutex{},
+		power: map[string]int{
+			"light": 100,
+			"fan":   200,
+		},
+		mux: &sync.Mutex{},
 	}
 
 	wg.Add(1)
-	go myBattery.light()
+	go myBattery.light(2)
 	wg.Add(1)
-	go myBattery.light()
+	go myBattery.light(20)
 	wg.Add(1)
-	go myBattery.light()
+	go myBattery.light(33)
+	wg.Add(1)
+	go myBattery.light(233)
+	wg.Add(1)
+	go myBattery.light(123)
+	wg.Add(1)
+	go myBattery.light(123)
+	wg.Add(1)
+	go myBattery.light(11)
 	// wg.Add(1)
-	// go myBattery.fan()
-	// go myBattery.light()
-	// go myBattery.light()
+	// go myBattery.fan(1)
 
 	wg.Wait()
 }
