@@ -4,6 +4,7 @@ import (
 	"net"
 	"os"
 
+	"github.com/hashicorp/go-hclog"
 	"github.com/itishrishikesh/learning-go/microservices/protos"
 	"github.com/itishrishikesh/learning-go/microservices/server"
 	"google.golang.org/grpc"

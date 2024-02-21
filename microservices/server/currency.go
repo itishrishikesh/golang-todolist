@@ -4,12 +4,12 @@ import (
 	"context"
 
 	"github.com/hashicorp/go-hclog"
-	"github.com/itishrishikesh/learning-go/microservices/protos"
-	protos "github.com/itishrishikesh/learning-go/microservices/protos/currency"
+	protos "github.com/itishrishikesh/learning-go/microservices/protos"
 )
 
 type Currency struct {
 	log hclog.Logger
+	protos.CurrencyServer
 }
 
 func NewCurrency(l hclog.Logger) *Currency {
